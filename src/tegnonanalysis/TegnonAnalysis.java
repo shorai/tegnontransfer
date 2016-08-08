@@ -115,7 +115,7 @@ public class TegnonAnalysis {
         } catch (Exception exc) {
             logger.severe(exc.getLocalizedMessage());
         }
-        // TODO code application logic here
+       
     }
     
 }
