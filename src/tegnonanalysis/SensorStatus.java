@@ -24,25 +24,25 @@ public class SensorStatus {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.SensorStatus");
    
-    static final String dataFields = " sensorStatusTID, sensorStatusName, description";
+    static final String dataFields = " SensorStatusTID, SensorStatusName, Description";
             
-    static final String fields = "sensorStatusId," + dataFields;
+    static final String fields = "SensorStatusID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
-            + "from SensorStatuss "
-            + "order by sensorStatusID";
-
+    static final String loadSQL1 = "select " + fields
+            + "from SensorStatus "
+            + "order by SensorStatusID";
+ static final String loadSQL = "select * from SensorStatus order by SensorStatusID";
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into SensorStatuss("
+    static final String insertSql = "insert into SensorStatus("
             + fields
             + ") values(?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update SensorStatuss set"
+    static final String updateSql = "update SensorStatus set"
             + " SensorStatusTID = ?,SensorStatusName = ?, description = ?"
-            + " where SensorStatusId = ?";
+            + " where SensorStatusID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -134,8 +134,8 @@ public class SensorStatus {
             //int deleted =  deleteStatement.executeUpdate();
             logger.info("Transfer SensorStatus complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
-            System.out.println("Transfer SensorStatuss  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+            System.out.println("Transfer SensorStatus  complete after processing  " 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer SensorStatus  Failed  after processing  " + count 

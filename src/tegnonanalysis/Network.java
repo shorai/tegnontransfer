@@ -24,25 +24,25 @@ public class Network {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Network");
    
-    static final String dataFields = " networkName, siteId";
+    static final String dataFields = " NetworkName";
             
-    static final String fields = "networkID," + dataFields;
+    static final String fields = "NetworkID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
+    static final String loadSQL = "select *"// + fields
             + "from Network "
-            + "order by networkID";
+            + "order by NetworkID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
     static final String insertSql = "insert into Network("
             + fields
-            + ") values(?,?,?)";
+            + ") values(?,?)";
     static PreparedStatement insertStatement = null;
 
     static final String updateSql = "update Network set"
-            + " NetworkName = ?, SiteId = ?"
-            + " where NetworkId = ?";
+            + " NetworkName = ?"
+            + " where NetworkID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -55,7 +55,7 @@ public class Network {
     //  static Set<Sensor> sensorsTouched = new HashSet<>();
     Integer id;
     String networkName;
-    int siteId;
+   
     
     static {
         logger.setUseParentHandlers(false);
@@ -73,14 +73,14 @@ public class Network {
     
         id = rs.getInt(i++);
         networkName = rs.getString(i++);
-        siteId = rs.getInt(i++);
+        
     }
 
     int update() throws SQLException {
         int i = 1;
        
         updateStatement.setString(i++, networkName);
-       updateStatement.setInt(i++,siteId);
+    
         
         updateStatement.setInt(i++, id);
 
@@ -92,7 +92,7 @@ public class Network {
         int i = 1;
         insertStatement.setInt(i++, id);
         insertStatement.setString(i++, networkName);
-        insertStatement.setInt(i++,siteId);
+       
            
         insertStatement.executeUpdate();
     }
@@ -131,7 +131,7 @@ public class Network {
             logger.info("Transfer Network complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer Network  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer Network  Failed  after processing  " + count 

@@ -24,25 +24,25 @@ public class Country {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Country");
    
-    static final String dataFields = " countryName";
+    static final String dataFields = " CountryName";
             
-    static final String fields = "countryId," + dataFields;
+    static final String fields = "CountryID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
-            + "from Country "
-            + "order by countryID";
+    static final String loadSQL = "select *"// + fields
+            + "from Countries "
+            + "order by CountryID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into Country("
+    static final String insertSql = "insert into Countries("
             + fields
             + ") values(?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update Country set"
+    static final String updateSql = "update Countries set"
             + " CountryName= ?"
-            + " where CountryId = ?";
+            + " where CountryID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -129,7 +129,7 @@ public class Country {
             logger.info("Transfer Country complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer Country  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer Country  Failed  after processing  " + count 

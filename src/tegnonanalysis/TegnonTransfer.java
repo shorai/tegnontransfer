@@ -8,6 +8,9 @@ package tegnonanalysis;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -58,10 +61,11 @@ public class TegnonTransfer {
         String password = "sHxXWij02AE4ciJre7yX";
 
         String connectionUrl = "jdbc:jtds:sqlserver://localhost/TegnonEfficiency";
-
+        //String connectionUrl = "jdbc:sqlserver://localhost:1433;databasename=TegnonEfficiency";
+       
         try {
 
-            //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+       //     Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             conn = DriverManager.getConnection(connectionUrl, username, password);
             System.out.println("Connection to MS SQL Succeeded");
 
@@ -176,8 +180,24 @@ public class TegnonTransfer {
             // SensorDataHalfHour
             // SensorDataImportLogs?? SensorDataImportStaging??
             // SensorDataNormal (the big huge)
-            SensorDataNormal sdn = new SensorDataNormal();
-            sdn.transfer(conn, mysqlConn);
+            //SensorDataNormal sdn = new SensorDataNormal();
+            /*
+             
+               SELECT TABLE_NAME AS 'Table Name', TABLE_ROWS AS 'Rows' FROM information_schema.TABLES 
+WHERE TABLES.TABLE_SCHEMA = 'TegnonEfficiency' AND TABLES.TABLE_TYPE = 'BASE TABLE'
+order by Rows desc; 
+                
+            */
+           
+            SensorDataNormal.transfer(conn, mysqlConn
+                  //  , LocalDateTime.from(df.parse("2016-05-01 00:00:00")), LocalDateTime.from(df.parse("2016-06-01 00:00:00")),0,690);
+                  //, LocalDateTime.from(df.parse("2016-06-01 00:00:00")), LocalDateTime.from(df.parse("2016-07-01 00:00:00")),0,9999999);
+                  //, LocalDateTime.from(df.parse("2016-07-01 00:00:00")), LocalDateTime.from(df.parse("2016-08-01 00:00:00")),0,999999999);
+                  , LocalDateTime.from(df.parse("2016-08-01 00:00:00")), LocalDateTime.from(df.parse("2016-09-01 00:00:00")),0,999999999);
+                 // , LocalDateTime.from(df.parse("2016-09-01 00:00:00")), LocalDateTime.from(df.parse("2016-10-01 00:00:00")),0,690);
+                 // , LocalDateTime.from(df.parse("2016-10-01 00:00:00")), LocalDateTime.from(df.parse("2016-11-01 00:00:00")),0,690);
+                
+            
         } catch (Exception exc) {
             System.out.println("Main Fialed " + exc.getLocalizedMessage());
             exc.printStackTrace();

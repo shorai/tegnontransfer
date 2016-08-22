@@ -24,25 +24,25 @@ public class MeasurementType {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.MeasurementType");
    
-    static final String dataFields = " measurementTypeTID, measurementTypeName, description";
+    static final String dataFields = " MeasurementTypeTID, MeasurementTypeName, Description";
             
-    static final String fields = "measurementTypeId," + dataFields;
+    static final String fields = "MeasurementTypeID," + dataFields;
    
     
     static final String loadSQL = "select " + fields
             + "from MeasurementTypes "
-            + "order by measurementTypeID";
+            + "order by MeasurementTypeID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into MeasurementTypes("
+    static final String insertSql = "insert into MeasurementType("
             + fields
             + ") values(?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update MeasurementTypes set"
-            + " MeasurementTypeTID = ?,MeasurementTypeName = ?, description = ?"
-            + " where MeasurementTypeId = ?";
+    static final String updateSql = "update MeasurementType set"
+            + " MeasurementTypeTID = ?,MeasurementTypeName = ?, Description = ?"
+            + " where MeasurementTypeID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -67,6 +67,9 @@ public class MeasurementType {
          logger.setLevel(Level.WARNING);
     }
 
+   public String toString() {
+        return "MeasurementType["+ id + "] " + measurementTypeTID + " " + measurementTypeName + " Descr:" + description;
+    }
     void bind(ResultSet rs) throws SQLException {
         //id, AttachmentID, SensorID, DeviceID,DateTimeStamp,SensorType,"
         //    + "SensorValue, SensorCalculatedType,SensorCalculatedValue
@@ -94,7 +97,7 @@ public class MeasurementType {
     void insert() throws SQLException {
         int i = 1;
         insertStatement.setInt(i++, id);
-        updateStatement.setInt(i++,measurementTypeTID);
+        insertStatement.setInt(i++,measurementTypeTID);
         insertStatement.setString(i++, measurementTypeName);
         insertStatement.setString(i++,description);
            
@@ -102,6 +105,7 @@ public class MeasurementType {
     }
     
     void save() throws SQLException {
+        //System.out.println(this.toString());
                 if (update() == 0) {
                     insert();
                     numInserts++;
@@ -116,7 +120,8 @@ public class MeasurementType {
         int count = 0;
        
         try {
-            loadStatement = in.prepareStatement(loadSQL);
+            //loadStatement = in.prepareStatement(loadSQL);
+            loadStatement = in.prepareStatement("select * from measurementType");
             insertStatement = out.prepareStatement(insertSql);
             updateStatement = out.prepareStatement(updateSql);
 
@@ -135,7 +140,7 @@ public class MeasurementType {
             logger.info("Transfer MeasurementType complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer MeasurementTypes  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer MeasurementType  Failed  after processing  " + count 

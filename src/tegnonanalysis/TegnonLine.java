@@ -24,14 +24,14 @@ public class TegnonLine {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.TegnonLine");
    
-    static final String dataFields = "  siteId, description";
+    static final String dataFields = "  SiteID, Description";
             
-    static final String fields = "tegnonLineID," + dataFields;
+    static final String fields = "LineID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
+    static final String loadSQL = "select *"// + fields
             + "from TegnonLine "
-            + "order by lineID";
+            + "order by LineID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
@@ -41,8 +41,8 @@ public class TegnonLine {
     static PreparedStatement insertStatement = null;
 
     static final String updateSql = "update TegnonLine set"
-            + "  SiteId = ?, description = ?"
-            + " where LineId = ?";
+            + "  SiteID = ?, Description = ?"
+            + " where LineID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -131,7 +131,7 @@ public class TegnonLine {
             logger.info("Transfer TegnonLine complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer TegnonLine  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer TegnonLine  Failed  after processing  " + count 

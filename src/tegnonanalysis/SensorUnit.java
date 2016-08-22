@@ -24,25 +24,25 @@ public class SensorUnit {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.SensorUnit");
    
-    static final String dataFields = " sensorUnitTID, sensorUnitName, description";
+    static final String dataFields = " SensorUnitTID, Description";
             
-    static final String fields = "sensorUnitId," + dataFields;
+    static final String fields = "SensorUnitID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
-            + "from SensorUnits "
-            + "order by sensorUnitID";
-
+    static final String loadSQL1 = "select " + fields
+            + "from SensorUnit "
+            + "order by SensorUnitID";
+    static final String loadSQL = "select * from SensorUnit order by SensorUnitID";
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into SensorUnits("
+    static final String insertSql = "insert into SensorUnit("
             + fields
             + ") values(?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update SensorUnits set"
-            + " SensorUnitTID = ?, description = ?"
-            + " where SensorUnitId = ?";
+    static final String updateSql = "update SensorUnit set"
+            + " SensorUnitTID = ?, Description = ?"
+            + " where SensorUnitID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -91,7 +91,7 @@ public class SensorUnit {
     void insert() throws SQLException {
         int i = 1;
         insertStatement.setInt(i++, id);
-        updateStatement.setInt(i++,sensorUnitTID);
+        insertStatement.setInt(i++,sensorUnitTID);
         insertStatement.setString(i++,description);
            
         insertStatement.executeUpdate();
@@ -131,7 +131,7 @@ public class SensorUnit {
             logger.info("Transfer SensorUnit complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer SensorUnits  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer SensorUnit  Failed  after processing  " + count 

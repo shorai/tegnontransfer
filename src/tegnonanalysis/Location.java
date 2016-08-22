@@ -24,14 +24,14 @@ public class Location {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Location");
    
-    static final String dataFields = " locationName, siteId";
+    static final String dataFields = " LocationName, siteID";
             
-    static final String fields = "locationID," + dataFields;
+    static final String fields = "LocationID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
+    static final String loadSQL = "select *"// + fields
             + "from Location "
-            + "order by locationID";
+            + "order by LocationID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
@@ -41,8 +41,8 @@ public class Location {
     static PreparedStatement insertStatement = null;
 
     static final String updateSql = "update Location set"
-            + " LocationName = ?, SiteId = ?"
-            + " where LocationId = ?";
+            + " LocationName = ?, SiteID = ?"
+            + " where LocationID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -131,7 +131,7 @@ public class Location {
             logger.info("Transfer Location complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer Location  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer Location  Failed  after processing  " + count 

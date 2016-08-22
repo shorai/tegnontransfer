@@ -24,25 +24,25 @@ public class Site {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Site");
    
-    static final String dataFields = " siteName, clientId";
+    static final String dataFields = " SiteName, ClientId";
             
-    static final String fields = "siteID," + dataFields;
+    static final String fields = "SiteID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
-            + "from Site "
-            + "order by siteID";
+    static final String loadSQL = "select *"// + fields
+            + "from Sites ";
+            //+ "order by SiteID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into Site("
+    static final String insertSql = "insert into Sites("
             + fields
             + ") values(?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update Site set"
-            + " SiteName = ?, clientId = ?"
-            + " where SiteId = ?";
+    static final String updateSql = "update Sites set"
+            + " SiteName = ?, ClientId = ?"
+            + " where SiteID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -131,7 +131,7 @@ public class Site {
             logger.info("Transfer Site complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer Site  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer Site  Failed  after processing  " + count 

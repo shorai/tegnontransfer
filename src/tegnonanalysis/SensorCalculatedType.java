@@ -27,13 +27,15 @@ public class SensorCalculatedType {
     static final String dataFields = " name";
             
             
-    static final String fields = "Id," + dataFields;
+    static final String fields = "ID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
+    static final String loadSQL1 = "select " + fields
             + "from SensorCalculatedTypes "
             + "order by ID";
-
+ static final String loadSQL = "select *"
+            + "from SensorCalculatedTypes "
+            + "order by ID";
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
     static final String insertSql = "insert into SensorCalculatedTypes("
@@ -43,7 +45,7 @@ public class SensorCalculatedType {
 
     static final String updateSql = "update SensorCalculatedTypes set"
             + " name = ?"
-            + " where Id = ?";
+            + " where ID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -128,7 +130,7 @@ public class SensorCalculatedType {
             logger.info("Transfer SensorCalculatedType complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer SensorCalculatedTypes  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer SensorCalculatedType  Failed  after processing  " + count 

@@ -24,14 +24,14 @@ public class Client {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Clients");
    
-    static final String dataFields = " clientName, countryId";
+    static final String dataFields = " ClientName, CountryID";
             
-    static final String fields = "clientId," + dataFields;
+    static final String fields = "ClientID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
-            + "from Clients "
-            + "order by clientID";
+    static final String loadSQL = "select *"// + fields
+            + "from Clients ";
+            //+ "order by ClientID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
@@ -41,8 +41,8 @@ public class Client {
     static PreparedStatement insertStatement = null;
 
     static final String updateSql = "update Clients set"
-            + " ClientName = ?, countryId = ?"
-            + " where ClientId = ?";
+            + " ClientName = ?, CountryID = ?"
+            + " where ClientID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -131,7 +131,7 @@ public class Client {
             logger.info("Transfer Clients complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer Clients  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer Clients  Failed  after processing  " + count 

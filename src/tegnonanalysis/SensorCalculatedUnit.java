@@ -27,10 +27,10 @@ public class SensorCalculatedUnit {
     static final String dataFields = " name";
             
             
-    static final String fields = "Id," + dataFields;
+    static final String fields = "ID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
+    static final String loadSQL = "select *"// + fields
             + "from SensorCalculatedUnits "
             + "order by ID";
 
@@ -43,7 +43,7 @@ public class SensorCalculatedUnit {
 
     static final String updateSql = "update SensorCalculatedUnits set"
             + " name = ?"
-            + " where Id = ?";
+            + " where ID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -128,7 +128,7 @@ public class SensorCalculatedUnit {
             logger.info("Transfer SensorCalculatedUnit complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer SensorCalculatedUnits  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer SensorCalculatedUnit  Failed  after processing  " + count 

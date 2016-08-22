@@ -24,28 +24,27 @@ public class Device {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Device");
    
-    static final String dataFields = "facilityInfo,deviceCommonName,networkId, sensorFacilityInfo"
-            + "modbusAddr, deviceSerialNumber, deviceType, firmwareVersion, reporting, locationId, numberOfAttachedSensors";
+    static final String dataFields = "FacilityInfo,DeviceCommonName,NetworkId, SensorFacilityInfo"
+            + ",ModbusAddr, DeviceSerialNumber, DeviceType, FirmwareVersion, Reporting, LocationId, NumberOfAttachedSensors";
             
-    static final String fields = "deviceID," + dataFields;
-   
-    
-    static final String loadSQL = "select " + fields
+    static final String fields = "DeviceID," + dataFields;
+       
+    static final String loadSQL = "select *"// + fields
             + "from Device "
-            + "order by deviceID";
+            + "order by DeviceID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
     static final String insertSql = "insert into Device("
             + fields
-            + ") values(?,?,?,?,?,?,?,?,?,?,?)";
+            + ") values(?,?,?,?,?,?,?,?,?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
     static final String updateSql = "update Device set"
-            + "facilityInfo=?,deviceCommonName=?,networkId, sensorFacilityInfo=?"
-            + ",modbusAddr=?, deviceSerialNumber=?, deviceType=?, firmwareVersion=?"
-            +", reporting=?, locationId=?, numberOfAttachedSensors=?"
-            + " where DeviceId = ?";
+            + " FacilityInfo=?,DeviceCommonName=?,NetworkId=?, SensorFacilityInfo=?"
+            + ",ModbusAddr=?, DeviceSerialNumber=?, DeviceType=?, FirmwareVersion=?"
+            +", Reporting=?, LocationId=?, NumberOfAttachedSensors=?"
+            + " where DeviceID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -166,7 +165,7 @@ public class Device {
             logger.info("Transfer Device complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer Device  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer Device  Failed  after processing  " + count 

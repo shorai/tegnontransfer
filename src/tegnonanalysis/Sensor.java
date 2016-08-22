@@ -17,19 +17,36 @@ import java.util.logging.Logger;
  * Singleton pattern since we always deal with a single instance at a time
  *
  * Later versions may optimise by reading an array for an attachment or device
- *
+ *  @TODO: had to remove constriant sensors->sensorType on SensorTypeTID
+ * 
+ * use tegnonefficiency;
+create index IX_SensorTypeTID on sensortype(SensorTypeTID);
+
+alter table sensors add constraint foreign key IX_FK_Sensors_SensorTypeTID(SensortypeTID) references SensorType(SensorTypeTID);
+
+alter table sensors drop foreign key FK_Sensors_SensorType;
+
+select COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_COLUMN_NAME, REFERENCED_TABLE_NAME
+from information_schema.KEY_COLUMN_USAGE
+where TABLE_NAME = 'sensors';
+
+drop index IX_FK_Sensors_SensorType on sensors;
+
+show indexes in  sensors;
+ * 
+ * 
  * @author chris.rowse
  */
 public class Sensor {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Sensor");
    
-    static final String dataFields = " DeviceID, SensorTypeTID, SensorUnitTID, MeasurementTypeTID, LineId, NetworkId, SensorNumber";
+    static final String dataFields = " DeviceID, SensorTypeTID, SensorUnitTID, MeasurementTypeTID, LineID, NetworkID, SensorNumber";
             
-    static final String fields = "sensorID," + dataFields;
+    static final String fields = "SensorID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
+    static final String loadSQL = "select *"// + fields
             + "from Sensors "
             + "order by SensorID";
 
@@ -41,9 +58,9 @@ public class Sensor {
     static PreparedStatement insertStatement = null;
 
     static final String updateSql = "update Sensors set"
-            + " DeviceId = ?, SensorTypeTID = ?, SensorUnitTID = ?, MeasurementTypeTID = ?, "
-            + " LineId=?, NetworkId=?, SensorNumber=?"
-            + " where SensorId = ?";
+            + " DeviceID = ?, SensorTypeTID = ?, SensorUnitTID = ?, MeasurementTypeTID = ?, "
+            + " LineID=?, NetworkID=?, SensorNumber=?"
+            + " where SensorID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -151,7 +168,7 @@ public class Sensor {
             logger.info("Transfer Sensors complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer Sensors  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer Sensors  Failed  after processing  " + count 

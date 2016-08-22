@@ -24,28 +24,28 @@ public class SensorType {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.SensorType");
    
-    static final String dataFields = " sensorTypeTID, description, defaultUnitOfMeasure"
-            + " ,displayOrder, analysis, sourceTypeTID, conversionFactor";
+    static final String dataFields = " sensorTypeTID, Description, DefaultUnitOfMeassure"
+            + " ,DisplayOrder, Analysis, SourceTypeTID, ConversionFactor";
             
-    static final String fields = "sensorTypeId," + dataFields;
+    static final String fields = "sensorTypeID," + dataFields;
    
     
-    static final String loadSQL = "select " + fields
-            + "from SensorTypes "
-            + "order by sensorTypeID";
-
+    static final String loadSQL = "select *"// + fields
+            + "from SensorType ";
+            //+ "order by SensorTypeID";
+static final String loadSQL1 = "select * from SensorType";
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into SensorTypes("
+    static final String insertSql = "insert into SensorType("
             + fields
             + ") values(?,?,?,?,?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update SensorTypes set"
-            + " SensorTypeTID = ?, description = ?"
-            + " defaultUnitOfMeasure = ?, displayOrder = ?"
-            + " analysis = ?, sourceTypeTID = ?, conversionFactor=?"
-            + " where SensorTypeId = ?";
+    static final String updateSql = "update SensorType set"
+            + " SensorTypeTID = ?, Description = ?"
+            + " ,DefaultUnitOfMeassure = ?, DisplayOrder = ?"
+            + " ,Analysis = ?, SourceTypeTID = ?, ConversionFactor=?"
+            + " where SensorTypeID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -109,7 +109,7 @@ public class SensorType {
     void insert() throws SQLException {
         int i = 1;
         insertStatement.setInt(i++, id);
-        updateStatement.setInt(i++,sensorTypeTID);
+        insertStatement.setInt(i++,sensorTypeTID);
         insertStatement.setString(i++,description);
         insertStatement.setString(i++,defaultUnitOfMeasure);
         insertStatement.setInt(i++,displayOrder);
@@ -154,7 +154,7 @@ public class SensorType {
             logger.info("Transfer SensorType complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
             System.out.println("Transfer SensorTypes  complete after processing  " 
-                    + count + " records, inserts = " + numInserts + numInserts 
+                    + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
             logger.severe("Transfer SensorType  Failed  after processing  " + count 
