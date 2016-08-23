@@ -75,19 +75,8 @@ public class SensorDataNormal {
             + "SensorValue, SensorCalculatedType,SensorCalculatedValue "
             + "from SensorDataNormal "
             + " where dateTimeStamp between ? and ?"
-            //+ "where dateTimeStamp between '2015-11-01 00:00:00' and '2016-01-01 00:00:00' "
-            //+ "where dateTimeStamp between '2016-01-01 00:00:00' and '2016-03-01 00:00:00' "
-            //+ "where dateTimeStamp between '2016-03-01 00:00:00' and '2016-04-01 00:00:00' "
-            //+ "where dateTimeStamp between '2016-04-01 00:00:00' and '2016-05-01 00:00:00' "
-            //+ "where dateTimeStamp between '2016-05-01 00:00:00' and '2016-06-01 00:00:00' "
-            //+ "where dateTimeStamp between '2016-06-01 00:00:00' and '2016-07-01 00:00:00' "
-            //+ "where dateTimeStamp between '2016-07-01 00:00:00' and '2016-08-01 00:00:00' "
-            //+ "where dateTimeStamp between '2016-08-01 00:00:00' and '2016-09-01 00:00:00' "
             + " and SensorID between ? and ?"
-            
-            + " and SensorID >= 690"
-             + "order by id";
-           // + "order by SensorID, DateTimeStamp";
+           + "order by DateTimeStamp,SensorID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
@@ -194,28 +183,28 @@ public class SensorDataNormal {
      * @throws SQLException 
      */
     static void save(int cachePointer) throws SQLException {
-        insertStatement.addBatch("BEGIN");
-        for (int i=0; i < cachePointer; i++) {        
-                recordCache.elementAt(i).insert();
-        }
-        insertStatement.addBatch("COMMIT");
-        int rs[]  = insertStatement.executeBatch();
-        int updates = 0;
         updateStatement.addBatch("BEGIN");
+        for (int i=0; i < cachePointer; i++) {        
+                recordCache.elementAt(i).update();
+        }
+        updateStatement.addBatch("COMMIT");
+        int rs[]  = updateStatement.executeBatch();
+        int inserts = 0;
+        insertStatement.addBatch("BEGIN");
         for (int i=1; i < rs.length-1; i++) {  // BEgin and Commit are results
             if (rs[i] < 1) {
-                recordCache.elementAt(i-1).update();
-                updates++;
-                numUpdates++;
+                recordCache.elementAt(i-1).insert();
+                inserts++;
+                numInserts++;
            } else {
-            numInserts++;
+            numUpdates++;
             }
         }
-         updateStatement.addBatch("COMMIT");
-        if (updates > 0)
-            updateStatement.executeBatch();
+         insertStatement.addBatch("COMMIT");
+        if (inserts > 0)
+            insertStatement.executeBatch();
         else 
-            updateStatement.clearBatch();
+            insertStatement.clearBatch();
         cachePointer=0;
     }
 
@@ -241,12 +230,14 @@ public class SensorDataNormal {
             ResultSet rs = loadStatement.executeQuery();
            
             int currentSensorId = 0;
+            
             sensorStart = LocalDateTime.now();
             int cachePointer = 0;
             
             while (rs.next()) {
                 SensorDataNormal thisx = recordCache.elementAt(cachePointer++);
                 thisx.bind(rs);
+            /*
                 if (thisx.sensorId != currentSensorId) {
                     currentSensorId = thisx.sensorId;
                     LocalDateTime ldt = LocalDateTime.now();
@@ -259,7 +250,7 @@ public class SensorDataNormal {
                     sensorStart = ldt;
                 }
                 
-
+*/
                 if (cachePointer >= cacheSize) {
                     save(cachePointer);
                     cachePointer = 0;
@@ -268,7 +259,9 @@ public class SensorDataNormal {
                 count++;
                 sensorCount++;
                 if (count % 100000 == 0) {
-                    System.out.println("\r\nProcessed " + count);
+                    System.out.println("\r\nProcessed " + count 
+                            + " DateTime:" + df.format(thisx.timestamp.toInstant()) 
+                            + " Sensor:"+ thisx.sensorId);
                 }
             }
             if (cachePointer > 0) 
