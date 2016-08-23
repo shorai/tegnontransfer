@@ -19,6 +19,26 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 /**
+ * THis ws designed to transfer SenorDataNormal records
+ * from Microsoft SQL server to Mysql
+ * 
+ * The process worked mid Aug 2016.
+ * Several enhancements made amazing performance difference
+ * 
+ * 1) Used sql.batchAdd() to batch 1000 records at a time
+ * 2) Used 'begin' and 'commit' after every batch
+ * 3) Order by id - the inserts apparently go much much faster
+ * 
+ * There is still some MySQL housekeeping that improves performance
+ *        probably overnight. I do not know how to invoke it manually
+ * 
+ * As a result there is a gradual degradation in performance over time
+ *     Tested on 10M inserts in about 30 minutes (3K5 records a second)
+ *     The original, without the above optimisations performed +- 100/second.
+ * 
+ * In order to satisfy foreign key constraints, many of the other tables are required
+ *   Suitable transfer mechanisms were built.
+ * 
  *
  * @author chris
  */
@@ -190,10 +210,11 @@ order by Rows desc;
             */
            
             SensorDataNormal.transfer(conn, mysqlConn
+                    , LocalDateTime.from(df.parse("2015-08-01 00:00:00")), LocalDateTime.from(df.parse("2016-09-01 00:00:00")),0,999999999);
                   //  , LocalDateTime.from(df.parse("2016-05-01 00:00:00")), LocalDateTime.from(df.parse("2016-06-01 00:00:00")),0,690);
                   //, LocalDateTime.from(df.parse("2016-06-01 00:00:00")), LocalDateTime.from(df.parse("2016-07-01 00:00:00")),0,9999999);
                   //, LocalDateTime.from(df.parse("2016-07-01 00:00:00")), LocalDateTime.from(df.parse("2016-08-01 00:00:00")),0,999999999);
-                  , LocalDateTime.from(df.parse("2016-08-01 00:00:00")), LocalDateTime.from(df.parse("2016-09-01 00:00:00")),0,999999999);
+                  //, LocalDateTime.from(df.parse("2016-08-01 00:00:00")), LocalDateTime.from(df.parse("2016-09-01 00:00:00")),0,999999999);
                  // , LocalDateTime.from(df.parse("2016-09-01 00:00:00")), LocalDateTime.from(df.parse("2016-10-01 00:00:00")),0,690);
                  // , LocalDateTime.from(df.parse("2016-10-01 00:00:00")), LocalDateTime.from(df.parse("2016-11-01 00:00:00")),0,690);
                 

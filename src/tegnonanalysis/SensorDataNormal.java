@@ -86,7 +86,8 @@ public class SensorDataNormal {
             + " and SensorID between ? and ?"
             
             + " and SensorID >= 690"
-            + "order by SensorID, DateTimeStamp";
+             + "order by id";
+           // + "order by SensorID, DateTimeStamp";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
