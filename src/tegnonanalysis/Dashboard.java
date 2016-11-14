@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //import static tegnonload.PiLine.df;
@@ -20,29 +22,29 @@ import java.util.logging.Logger;
  *
  * @author chris.rowse
  */
-public class TegnonLine {
+public class Dashboard {
 
-    static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.TegnonLine");
+    static final Logger logger = TegnonTransfer.tegnonLogger; //.getLogger("tegnonanalysis.Country");
    
-    static final String dataFields = "  SiteID, Description";
+    static final String dataFields = " Name,URL,created_at,updated_at,status";
             
-    static final String fields = "LineID," + dataFields;
+    static final String fields = "DashboardID," + dataFields;
    
     
     static final String loadSQL = "select *"// + fields
-            + "from tegnonline "
-            + "order by LineID";
+            + "from Dashboard "
+            + "order by DashboardID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into tegnonline("
+    static final String insertSql = "insert into Dashboard("
             + fields
-            + ") values(?,?,?)";
+            + ") values(?,?,?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update tegnonline set"
-            + "  SiteID = ?, Description = ?"
-            + " where LineID = ?";
+    static final String updateSql = "update Dashboard set"
+            + " Name= ?, URL=?, created_at=?, updated_at=?,status=?"
+            + " where DashboardID = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -54,8 +56,14 @@ public class TegnonLine {
     // set of all sensors touched by the file
     //  static Set<Sensor> sensorsTouched = new HashSet<>();
     Integer id;
-    int siteId;
-    String description;
+    String name;
+    String url;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+    int status;
+            
+            
+    
     
     static {
         logger.setUseParentHandlers(false);
@@ -72,15 +80,22 @@ public class TegnonLine {
         int i = 1;
     
         id = rs.getInt(i++);
-        siteId = rs.getInt(i++);
-        description = rs.getString(i++);
+        name = rs.getString(i++);
+        url = rs.getString(i++);
+        createdAt = rs.getTimestamp(i++).toLocalDateTime();
+        updatedAt = rs.getTimestamp(i++).toLocalDateTime();
+        status = rs.getInt(i++);
+           
     }
 
     int update() throws SQLException {
         int i = 1;
        
-       updateStatement.setInt(i++,siteId);
-        updateStatement.setString(i++, description);
+        updateStatement.setString(i++, name);
+        updateStatement.setString(i++, url);
+        updateStatement.setTimestamp(i++, Timestamp.valueOf(createdAt));
+        updateStatement.setTimestamp(i++, Timestamp.valueOf(updatedAt));
+        updateStatement.setInt(i++, status);
         
         updateStatement.setInt(i++, id);
 
@@ -91,9 +106,12 @@ public class TegnonLine {
     void insert() throws SQLException {
         int i = 1;
         insertStatement.setInt(i++, id);
-        insertStatement.setInt(i++,siteId);
-        insertStatement.setString(i++, description);
-           
+        insertStatement.setString(i++, name);
+        insertStatement.setString(i++, url);
+        insertStatement.setTimestamp(i++, Timestamp.valueOf(createdAt));
+        insertStatement.setTimestamp(i++, Timestamp.valueOf(updatedAt));
+        insertStatement.setInt(i++, status);
+      
         insertStatement.executeUpdate();
     }
     
@@ -128,17 +146,17 @@ public class TegnonLine {
                 }
             }
             //int deleted =  deleteStatement.executeUpdate();
-            logger.info("Transfer TegnonLine complete after processing  " + count 
+            logger.info("Transfer Dashboard complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
-            System.out.println("Transfer TegnonLine  complete after processing  " 
+            System.out.println("Transfer Dashboard  complete after processing  " 
                     + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
-            logger.severe("Transfer TegnonLine  Failed  after processing  " + count 
+            logger.severe("Transfer Dashboard  Failed  after processing  " + count 
                     + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates 
                     + "   Exception:" + sexc.getLocalizedMessage());
-            System.out.println("Transfer TegnonLine  Failed  after processing  " + count 
+            System.out.println("Transfer Dashboard Failed  after processing  " + count 
                     + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates 
                     + "   Exception:" + sexc.getLocalizedMessage());

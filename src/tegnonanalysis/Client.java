@@ -30,17 +30,17 @@ public class Client {
    
     
     static final String loadSQL = "select *"// + fields
-            + "from Clients ";
+            + "from clients ";
             //+ "order by ClientID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into Clients("
+    static final String insertSql = "insert into clients("
             + fields
             + ") values(?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update Clients set"
+    static final String updateSql = "update clients set"
             + " ClientName = ?, CountryID = ?"
             + " where ClientID = ?";
     static PreparedStatement updateStatement = null;

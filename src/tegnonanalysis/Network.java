@@ -30,17 +30,17 @@ public class Network {
    
     
     static final String loadSQL = "select *"// + fields
-            + "from Network "
+            + "from network "
             + "order by NetworkID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into Network("
+    static final String insertSql = "insert into network("
             + fields
             + ") values(?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update Network set"
+    static final String updateSql = "update network set"
             + " NetworkName = ?"
             + " where NetworkID = ?";
     static PreparedStatement updateStatement = null;

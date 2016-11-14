@@ -2,6 +2,29 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ * The Following tables are used by Morgan's program (4/11/2016)
+    
+Laravel tables (don't need to copy)
+    sessions
+    password_reminders
+    failed_jobs
+    cache
+    
+App tables
+    users
+    dashboard
+    sites
+    sensortype
+
+Views
+    SensorAnalysis
+    UserLines
+    UserLocations
+    UserSites
+    
+Tables used by views
+
+    
  */
 package tegnonanalysis;
 
@@ -43,22 +66,31 @@ import java.util.logging.SimpleFormatter;
  * @author chris
  */
 public class TegnonTransfer {
+    
+    static boolean TEST_RUN = true;
+    
 
     static final int LOG_SIZE = 1000000;
     static final int LOG_ROTATION_COUNT = 10;
 
     public static Connection conn;
     public static Connection mysqlConn;
-    static public final Logger tegnonLogger = Logger.getLogger("tegnonanalysis");
+    static public final Logger tegnonLogger = Logger.getLogger("tegnonanTransfer");
     static Handler logHandler = null;
 
-    static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis");
+    static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonTransfer");
     static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     static {
         try {
-            new File("logs").mkdir();
-            logHandler = new FileHandler("c:/inetpub/wwwroot/app/storage/TegnonLogs/TegnonAnalysis.log", LOG_SIZE, LOG_ROTATION_COUNT);
+            
+            if (TEST_RUN) {
+                new File("/home/chris/Tegnon/test/logs/").mkdirs();
+                logHandler = new FileHandler("/home/chris/Tegnon/test/logs/transfer.log", LOG_SIZE, LOG_ROTATION_COUNT);
+            } else {
+                new File("logs").mkdir();
+                logHandler = new FileHandler("c:/inetpub/wwwroot/app/storage/TegnonLogs/TegnonAnalysis.log", LOG_SIZE, LOG_ROTATION_COUNT);
+            }
             logHandler.setFormatter(new SimpleFormatter());
             logger.setLevel(Level.INFO);
             logger.setUseParentHandlers(false);
@@ -77,12 +109,18 @@ public class TegnonTransfer {
 
     static public void connectSQL() {
         // Create a variable for the connection string.
+        
         String username = "javaUser1";
         String password = "sHxXWij02AE4ciJre7yX";
 
         String connectionUrl = "jdbc:jtds:sqlserver://localhost/TegnonEfficiency";
         //String connectionUrl = "jdbc:sqlserver://localhost:1433;databasename=TegnonEfficiency";
        
+        if (TEST_RUN) {
+            connectionUrl = "jdbc:mysql://localhost/TegnonEfficiency";
+            username = "root";
+            password = "tttoyfJ1_3";
+        }
         try {
 
        //     Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -104,6 +142,12 @@ public class TegnonTransfer {
 
         String connectionUrl = "jdbc:mysql://localhost/TegnonEfficiency";
 
+        if (TEST_RUN) {
+            connectionUrl = "jdbc:mysql://localhost/TegnonNormal";
+            username = "root";
+            password = "tttoyfJ1_3";
+        }
+        
         try {
 
             //Class.forName("com.mysql.MySQLDriver");
@@ -189,10 +233,29 @@ public class TegnonTransfer {
             Sensor sensor = new Sensor();
             sensor.transfer(conn, mysqlConn);
 
-             // TegnonLineSensors
+                // Roles
+            Role role = new Role();
+            role.transfer(conn, mysqlConn);
+         
+             // Users
+            User user = new User();
+            user.transfer(conn, mysqlConn);
+            
+             // User_has_sites
+            UserHasSites userSites = new UserHasSites();
+            userSites.transfer(conn, mysqlConn);
+            
+            //Needed
+            AssignedRole assignedRole = new AssignedRole();
+            assignedRole.transfer(conn, mysqlConn);
             
             
-            //  roles, users, assigned_roles, persons, profession??. roles, roles_has_permissions, TegnonPermission, userDevice, user_has_site, user_has_client, UserSensor
+           UserHasClient userClient = new UserHasClient();
+           userClient.transfer(conn, mysqlConn);
+            
+            
+            // Superfluous tables
+            //   persons, profession??. roles_has_permissions, TegnonPermission, userDevice,  UserSensor
             // FileMap, loadStats
             // sensorData??
             // sensorDataDewpoint??
@@ -208,7 +271,7 @@ WHERE TABLES.TABLE_SCHEMA = 'TegnonEfficiency' AND TABLES.TABLE_TYPE = 'BASE TAB
 order by Rows desc; 
                 
             */
-           
+           /*
             SensorDataNormal.transfer(conn, mysqlConn
                     , LocalDateTime.from(df.parse("2015-08-01 00:00:00")), LocalDateTime.from(df.parse("2016-09-01 00:00:00")),0,999999999);
                   //  , LocalDateTime.from(df.parse("2016-05-01 00:00:00")), LocalDateTime.from(df.parse("2016-06-01 00:00:00")),0,690);
@@ -218,7 +281,7 @@ order by Rows desc;
                  // , LocalDateTime.from(df.parse("2016-09-01 00:00:00")), LocalDateTime.from(df.parse("2016-10-01 00:00:00")),0,690);
                  // , LocalDateTime.from(df.parse("2016-10-01 00:00:00")), LocalDateTime.from(df.parse("2016-11-01 00:00:00")),0,690);
                 
-            
+            */
         } catch (Exception exc) {
             System.out.println("Main Fialed " + exc.getLocalizedMessage());
             exc.printStackTrace();

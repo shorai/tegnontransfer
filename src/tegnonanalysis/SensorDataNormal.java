@@ -73,20 +73,20 @@ public class SensorDataNormal {
     static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     static final String loadSQL = "select id, AttachmentID, SensorID, DeviceID,DateTimeStamp,SensorType,"
             + "SensorValue, SensorCalculatedType,SensorCalculatedValue "
-            + "from SensorDataNormal "
+            + "from sensordatanormal "
             + " where dateTimeStamp between ? and ?"
             + " and SensorID between ? and ?"
            + "order by DateTimeStamp,SensorID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into SensorDataNormal(AttachmentID, "
+    static final String insertSql = "insert into sensordatanormal(AttachmentID, "
             + " SensorId, DeviceID,StampTime,SensorType,"
             + " SensorValue, SensorCalculatedType,SensorCalculatedValue)"
             + " values(?,?,?,?,?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update SensorDataNormal set"
+    static final String updateSql = "update sensordatanormal set"
             + " AttachmentId = ?, SensorId = ?, DeviceID = ?, StampTime = ?, SensorType = ?, "
             + " SensorValue=?, SensorCalculatedType=?, SensorCalculatedValue=?"
             + " where id = ?";

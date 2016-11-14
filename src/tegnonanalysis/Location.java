@@ -30,17 +30,17 @@ public class Location {
    
     
     static final String loadSQL = "select *"// + fields
-            + "from Location "
+            + "from location "
             + "order by LocationID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into Location("
+    static final String insertSql = "insert into location("
             + fields
             + ") values(?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update Location set"
+    static final String updateSql = "update location set"
             + " LocationName = ?, SiteID = ?"
             + " where LocationID = ?";
     static PreparedStatement updateStatement = null;

@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //import static tegnonload.PiLine.df;
@@ -20,31 +22,35 @@ import java.util.logging.Logger;
  *
  * @author chris.rowse
  */
-public class TegnonLine {
+public class UserHasClient {
 
-    static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.TegnonLine");
+    static final Logger logger = TegnonTransfer.tegnonLogger; //.getLogger("tegnonanalysis.Users");
    
-    static final String dataFields = "  SiteID, Description";
+    static final String dataFields = " Clients_ClientID";
             
-    static final String fields = "LineID," + dataFields;
+    static final String fields = "TegnonUsers_id" + dataFields;
    
     
     static final String loadSQL = "select *"// + fields
-            + "from tegnonline "
-            + "order by LineID";
+            + "from users_has_client "
+            + "order by TegnonUsers_id,Clients_clientID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into tegnonline("
+    static final String insertSql = "insert into users_has_client("
             + fields
-            + ") values(?,?,?)";
+            + ") values(?,?)";
     static PreparedStatement insertStatement = null;
-
-    static final String updateSql = "update tegnonline set"
-            + "  SiteID = ?, Description = ?"
-            + " where LineID = ?";
+/*  This is a pure relationship
+    static final String updateSql = "update ssers_has_sites set"
+            + " UserName= ?"
+            + "password=?, email=?, remember_token=?, "
+            + "created_at=?, updated_at=?, status=?,"
+            + "clientID=?, location_id = ?, SiteID=?, active_client=?,active_site=?"
+            + " where UserID = ?";
+  
     static PreparedStatement updateStatement = null;
-
+*/
     static int numInserts = 0;
     static int numUpdates = 0;
     static int numErrors = 0;
@@ -53,9 +59,10 @@ public class TegnonLine {
     //static LocalDateTime lastTime = null;
     // set of all sensors touched by the file
     //  static Set<Sensor> sensorsTouched = new HashSet<>();
-    Integer id;
-    int siteId;
-    String description;
+    //Integer id;
+    
+    int clientId, userId;
+    
     
     static {
         logger.setUseParentHandlers(false);
@@ -67,32 +74,48 @@ public class TegnonLine {
     }
 
     void bind(ResultSet rs) throws SQLException {
-        //id, AttachmentID, SensorID, DeviceID,DateTimeStamp,SensorType,"
-        //    + "SensorValue, SensorCalculatedType,SensorCalculatedValue
         int i = 1;
     
-        id = rs.getInt(i++);
-        siteId = rs.getInt(i++);
-        description = rs.getString(i++);
+      //  id = rs.getInt(i++);
+        userId = rs.getInt(i++);
+        clientId= rs.getInt(i++);
+       
     }
 
     int update() throws SQLException {
         int i = 1;
-       
-       updateStatement.setInt(i++,siteId);
-        updateStatement.setString(i++, description);
+       /*
+        updateStatement.setString(i++, userName);
+        updateStatement.setString(i++, password);
+        updateStatement.setString(i++, email);
+        updateStatement.setString(i++, remember_token);
+        updateStatement.setTimestamp(i++, Timestamp.valueOf(created_at));
+        updateStatement.setTimestamp(i++, Timestamp.valueOf(updated_at));
+        updateStatement.setBoolean(i++, status);
+        updateStatement.setInt(i++, clientId);
+        updateStatement.setInt(i++, location_id);
+        updateStatement.setBoolean(i++, active_client);
+        updateStatement.setBoolean(i++, active_site);
+        
         
         updateStatement.setInt(i++, id);
 
         i = updateStatement.executeUpdate();
-        return i;
+        */
+       return i;
     }
 
+    /**
+     * 
+     " UserID, UserName,password,email,remember_token,"
+            + "created_at,updated_at,status,"
+            + "clientID,location_id,SiteID,active_client,active_site";
+     * @throws SQLException 
+     */
     void insert() throws SQLException {
         int i = 1;
-        insertStatement.setInt(i++, id);
-        insertStatement.setInt(i++,siteId);
-        insertStatement.setString(i++, description);
+        insertStatement.setInt(i++, userId);
+        insertStatement.setInt(i++, clientId);
            
         insertStatement.executeUpdate();
     }
@@ -114,7 +137,7 @@ public class TegnonLine {
         try {
             loadStatement = in.prepareStatement(loadSQL);
             insertStatement = out.prepareStatement(insertSql);
-            updateStatement = out.prepareStatement(updateSql);
+       //     updateStatement = out.prepareStatement(updateSql);
 
             ResultSet rs = loadStatement.executeQuery();
 
@@ -128,17 +151,17 @@ public class TegnonLine {
                 }
             }
             //int deleted =  deleteStatement.executeUpdate();
-            logger.info("Transfer TegnonLine complete after processing  " + count 
+            logger.info("Transfer User_has_sites complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
-            System.out.println("Transfer TegnonLine  complete after processing  " 
+            System.out.println("Transfer User_has_sites  complete after processing  " 
                     + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
-            logger.severe("Transfer TegnonLine  Failed  after processing  " + count 
+            logger.severe("Transfer User_has_client  Failed  after processing  " + count 
                     + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates 
                     + "   Exception:" + sexc.getLocalizedMessage());
-            System.out.println("Transfer TegnonLine  Failed  after processing  " + count 
+            System.out.println("Transfer User_has_client  Failed  after processing  " + count 
                     + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates 
                     + "   Exception:" + sexc.getLocalizedMessage());

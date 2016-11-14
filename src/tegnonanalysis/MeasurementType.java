@@ -30,17 +30,17 @@ public class MeasurementType {
    
     
     static final String loadSQL = "select " + fields
-            + "from MeasurementTypes "
+            + "from measurementtype "
             + "order by MeasurementTypeID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into MeasurementType("
+    static final String insertSql = "insert into measurementtype("
             + fields
             + ") values(?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update MeasurementType set"
+    static final String updateSql = "update measurementtype set"
             + " MeasurementTypeTID = ?,MeasurementTypeName = ?, Description = ?"
             + " where MeasurementTypeID = ?";
     static PreparedStatement updateStatement = null;
@@ -121,7 +121,7 @@ public class MeasurementType {
        
         try {
             //loadStatement = in.prepareStatement(loadSQL);
-            loadStatement = in.prepareStatement("select * from measurementType");
+            loadStatement = in.prepareStatement("select * from measurementtype");
             insertStatement = out.prepareStatement(insertSql);
             updateStatement = out.prepareStatement(updateSql);
 

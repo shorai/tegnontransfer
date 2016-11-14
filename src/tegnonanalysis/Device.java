@@ -30,17 +30,17 @@ public class Device {
     static final String fields = "DeviceID," + dataFields;
        
     static final String loadSQL = "select *"// + fields
-            + "from Device "
+            + "from device "
             + "order by DeviceID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into Device("
+    static final String insertSql = "insert into device("
             + fields
             + ") values(?,?,?,?,?,?,?,?,?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update Device set"
+    static final String updateSql = "update device set"
             + " FacilityInfo=?,DeviceCommonName=?,NetworkId=?, SensorFacilityInfo=?"
             + ",ModbusAddr=?, DeviceSerialNumber=?, DeviceType=?, FirmwareVersion=?"
             +", Reporting=?, LocationId=?, NumberOfAttachedSensors=?"

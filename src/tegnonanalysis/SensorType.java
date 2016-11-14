@@ -31,17 +31,17 @@ public class SensorType {
    
     
     static final String loadSQL = "select *"// + fields
-            + "from SensorType ";
+            + "from sensortype ";
             //+ "order by SensorTypeID";
-static final String loadSQL1 = "select * from SensorType";
+static final String loadSQL1 = "select * from sensortype";
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into SensorType("
+    static final String insertSql = "insert into sensortype("
             + fields
             + ") values(?,?,?,?,?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update SensorType set"
+    static final String updateSql = "update sensortype set"
             + " SensorTypeTID = ?, Description = ?"
             + " ,DefaultUnitOfMeassure = ?, DisplayOrder = ?"
             + " ,Analysis = ?, SourceTypeTID = ?, ConversionFactor=?"
@@ -168,6 +168,10 @@ static final String loadSQL1 = "select * from SensorType";
             sexc.printStackTrace();
         }
 
+    }
+    
+    public String toString() {
+        return String.format("(%2d) %s",this.id,this.description);
     }
 
 }

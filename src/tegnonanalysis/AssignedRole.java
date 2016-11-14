@@ -20,29 +20,29 @@ import java.util.logging.Logger;
  *
  * @author chris.rowse
  */
-public class TegnonLine {
+public class AssignedRole {
 
-    static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.TegnonLine");
+    static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Site");
    
-    static final String dataFields = "  SiteID, Description";
+    static final String dataFields = " User_id, role_id";
             
-    static final String fields = "LineID," + dataFields;
+    static final String fields = "id," + dataFields;
    
     
     static final String loadSQL = "select *"// + fields
-            + "from tegnonline "
-            + "order by LineID";
+            + "from assigned_roles ";
+            //+ "order by SiteID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into tegnonline("
+    static final String insertSql = "insert into assigned_roles("
             + fields
             + ") values(?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update tegnonline set"
-            + "  SiteID = ?, Description = ?"
-            + " where LineID = ?";
+    static final String updateSql = "update assigned_roles set"
+            + " User_id = ?, role_id = ?"
+            + " where id = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -54,8 +54,8 @@ public class TegnonLine {
     // set of all sensors touched by the file
     //  static Set<Sensor> sensorsTouched = new HashSet<>();
     Integer id;
-    int siteId;
-    String description;
+   
+    int userId, roleId;
     
     static {
         logger.setUseParentHandlers(false);
@@ -72,15 +72,15 @@ public class TegnonLine {
         int i = 1;
     
         id = rs.getInt(i++);
-        siteId = rs.getInt(i++);
-        description = rs.getString(i++);
+        userId = rs.getInt(i++);
+        roleId = rs.getInt(i++);
     }
 
     int update() throws SQLException {
         int i = 1;
        
-       updateStatement.setInt(i++,siteId);
-        updateStatement.setString(i++, description);
+        updateStatement.setInt(i++, userId);
+       updateStatement.setInt(i++,roleId);
         
         updateStatement.setInt(i++, id);
 
@@ -91,8 +91,8 @@ public class TegnonLine {
     void insert() throws SQLException {
         int i = 1;
         insertStatement.setInt(i++, id);
-        insertStatement.setInt(i++,siteId);
-        insertStatement.setString(i++, description);
+        insertStatement.setInt(i++, userId);
+        insertStatement.setInt(i++,roleId);
            
         insertStatement.executeUpdate();
     }
@@ -128,17 +128,17 @@ public class TegnonLine {
                 }
             }
             //int deleted =  deleteStatement.executeUpdate();
-            logger.info("Transfer TegnonLine complete after processing  " + count 
+            logger.info("Transfer assigned_role complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
-            System.out.println("Transfer TegnonLine  complete after processing  " 
-                    + count + " records, inserts = " + numInserts  
+            System.out.println("Transfer Site  complete after processing  " 
+                    + count + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
-            logger.severe("Transfer TegnonLine  Failed  after processing  " + count 
+            logger.severe("Transfer assigned_role  Failed  after processing  " + count 
                     + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates 
                     + "   Exception:" + sexc.getLocalizedMessage());
-            System.out.println("Transfer TegnonLine  Failed  after processing  " + count 
+            System.out.println("Transfer assigned_role  Failed  after processing  " + count 
                     + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates 
                     + "   Exception:" + sexc.getLocalizedMessage());

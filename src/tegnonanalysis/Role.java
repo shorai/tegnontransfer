@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //import static tegnonload.PiLine.df;
@@ -20,29 +22,31 @@ import java.util.logging.Logger;
  *
  * @author chris.rowse
  */
-public class TegnonLine {
+public class Role {
 
-    static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.TegnonLine");
+    static final Logger logger = TegnonTransfer.tegnonLogger; //.getLogger("tegnonanalysis.Users");
    
-    static final String dataFields = "  SiteID, Description";
+    static final String dataFields = " name,"
+            + "created_at,updated_at";
             
-    static final String fields = "LineID," + dataFields;
+    static final String fields = "id," + dataFields;
    
     
     static final String loadSQL = "select *"// + fields
-            + "from tegnonline "
-            + "order by LineID";
+            + "from roles "
+            + "order by id";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into tegnonline("
+    static final String insertSql = "insert into roles("
             + fields
-            + ") values(?,?,?)";
+            + ") values(?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update tegnonline set"
-            + "  SiteID = ?, Description = ?"
-            + " where LineID = ?";
+    static final String updateSql = "update roles set"
+            + " name= ?, "
+            + " created_at=?, updated_at=?"
+            + " where id = ?";
     static PreparedStatement updateStatement = null;
 
     static int numInserts = 0;
@@ -54,8 +58,9 @@ public class TegnonLine {
     // set of all sensors touched by the file
     //  static Set<Sensor> sensorsTouched = new HashSet<>();
     Integer id;
-    int siteId;
-    String description;
+    String name;
+    LocalDateTime created_at,updated_at;
+    
     
     static {
         logger.setUseParentHandlers(false);
@@ -67,20 +72,44 @@ public class TegnonLine {
     }
 
     void bind(ResultSet rs) throws SQLException {
-        //id, AttachmentID, SensorID, DeviceID,DateTimeStamp,SensorType,"
-        //    + "SensorValue, SensorCalculatedType,SensorCalculatedValue
+        //userName,password,email,remember_token,"
+        //    + "created_at,updated_at,status,"
+        //    + "clientID,location_id,SiteID,active_client,active_site"
+        //    + ""
         int i = 1;
     
         id = rs.getInt(i++);
-        siteId = rs.getInt(i++);
-        description = rs.getString(i++);
+        name = rs.getString(i++);
+          try {
+            Timestamp ct = rs.getTimestamp(i++);
+            if (ct != null) {
+                created_at = ct.toLocalDateTime();
+            } else {
+                created_at =  LocalDateTime.now();
+            }
+        } catch (SQLException sexc) {
+            created_at = LocalDateTime.now();
+        }
+        try {
+            Timestamp ut = rs.getTimestamp(i++);
+            if (ut != null) {
+                updated_at = ut.toLocalDateTime();
+            } else {
+                updated_at = LocalDateTime.now();
+            }
+        } catch (SQLException sexc) {
+            updated_at = LocalDateTime.now();
+        }
+        
     }
 
     int update() throws SQLException {
         int i = 1;
        
-       updateStatement.setInt(i++,siteId);
-        updateStatement.setString(i++, description);
+        updateStatement.setString(i++, name);
+        updateStatement.setTimestamp(i++, Timestamp.valueOf(created_at));
+        updateStatement.setTimestamp(i++, Timestamp.valueOf(updated_at));
+        
         
         updateStatement.setInt(i++, id);
 
@@ -88,11 +117,20 @@ public class TegnonLine {
         return i;
     }
 
+    /**
+     * 
+     " UserID, UserName,password,email,remember_token,"
+            + "created_at,updated_at,status,"
+            + "clientID,location_id,SiteID,active_client,active_site";
+     * @throws SQLException 
+     */
     void insert() throws SQLException {
         int i = 1;
         insertStatement.setInt(i++, id);
-        insertStatement.setInt(i++,siteId);
-        insertStatement.setString(i++, description);
+        insertStatement.setString(i++, name);
+        insertStatement.setTimestamp(i++, Timestamp.valueOf(created_at));
+        insertStatement.setTimestamp(i++, Timestamp.valueOf(updated_at));
+        
            
         insertStatement.executeUpdate();
     }
@@ -128,17 +166,17 @@ public class TegnonLine {
                 }
             }
             //int deleted =  deleteStatement.executeUpdate();
-            logger.info("Transfer TegnonLine complete after processing  " + count 
+            logger.info("Transfer Roles complete after processing  " + count 
                     + " records, inserts = " + numInserts + " Updates="+numUpdates);
-            System.out.println("Transfer TegnonLine  complete after processing  " 
+            System.out.println("Transfer Roles  complete after processing  " 
                     + count + " records, inserts = " + numInserts  
                     + " Updates="+numUpdates);
         } catch (SQLException sexc) {
-            logger.severe("Transfer TegnonLine  Failed  after processing  " + count 
+            logger.severe("Transfer Roles  Failed  after processing  " + count 
                     + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates 
                     + "   Exception:" + sexc.getLocalizedMessage());
-            System.out.println("Transfer TegnonLine  Failed  after processing  " + count 
+            System.out.println("Transfer Roles  Failed  after processing  " + count 
                     + " records, inserts = " + numInserts 
                     + " Updates="+numUpdates 
                     + "   Exception:" + sexc.getLocalizedMessage());

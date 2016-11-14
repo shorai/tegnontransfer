@@ -30,17 +30,17 @@ public class SensorStatus {
    
     
     static final String loadSQL1 = "select " + fields
-            + "from SensorStatus "
+            + "from sensorstatus "
             + "order by SensorStatusID";
- static final String loadSQL = "select * from SensorStatus order by SensorStatusID";
+ static final String loadSQL = "select * from sensorstatus order by SensorStatusID";
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into SensorStatus("
+    static final String insertSql = "insert into sensorstatus("
             + fields
             + ") values(?,?,?,?)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update SensorStatus set"
+    static final String updateSql = "update sensorstatus set"
             + " SensorStatusTID = ?,SensorStatusName = ?, description = ?"
             + " where SensorStatusID = ?";
     static PreparedStatement updateStatement = null;

@@ -24,23 +24,23 @@ public class Country {
 
     static final Logger logger = TegnonTransfer.tegnonLogger.getLogger("tegnonanalysis.Country");
    
-    static final String dataFields = " CountryName";
+    static final String dataFields = " CountryName,ClientID";
             
     static final String fields = "CountryID," + dataFields;
    
     
     static final String loadSQL = "select *"// + fields
-            + "from Countries "
+            + "from countries "
             + "order by CountryID";
 
     static PreparedStatement loadStatement = null;
 // NB DateTimeStamp is a reserved word in SQL 92  MS SQL should NEVER allow it tio be used as a column name
-    static final String insertSql = "insert into Countries("
+    static final String insertSql = "insert into countries("
             + fields
-            + ") values(?,?)";
+            + ") values(?,?,1)";
     static PreparedStatement insertStatement = null;
 
-    static final String updateSql = "update Countries set"
+    static final String updateSql = "update countries set"
             + " CountryName= ?"
             + " where CountryID = ?";
     static PreparedStatement updateStatement = null;
